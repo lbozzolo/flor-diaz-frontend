@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { fetchAPI } from "@/lib/strapi";
@@ -27,7 +27,7 @@ interface Choreography {
     };
 }
 
-export default function CheckoutPage() {
+function CheckoutContent() {
     const searchParams = useSearchParams();
     const productSlug = searchParams.get("product");
     const { user, loading: authLoading } = useAuth();
@@ -207,5 +207,17 @@ export default function CheckoutPage() {
                 </Card>
             </div>
         </div>
+    );
+}
+
+export default function CheckoutPage() {
+    return (
+        <Suspense fallback={
+            <div className="flex items-center justify-center min-h-[60vh]">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+        }>
+            <CheckoutContent />
+        </Suspense>
     );
 }
